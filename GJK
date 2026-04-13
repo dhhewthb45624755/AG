@@ -1,0 +1,341 @@
+local repo = 'https://raw.githubusercontent.com/deividcomsono/Obsidian/main/'
+
+local Library = loadstring(game:HttpGet(repo .. 'Library.lua'))()
+local ThemeManager = loadstring(game:HttpGet(repo .. 'addons/ThemeManager.lua'))()
+local SaveManager = loadstring(game:HttpGet(repo .. 'addons/SaveManager.lua'))()
+local Options = Library.Options
+local Toggles = Library.Toggles
+Library.ShowToggleFrameInKeybinds = true 
+Library.ShowCustomCursor = true
+Library.NotifySide = "Right"
+
+local Window = Library:CreateWindow({
+	Title = ' 被遗弃   NOL',
+	Footer = "MingWare - NOL Team",
+    Icon = 134543491994706,
+	Center = true,
+	AutoShow = true,
+	Resizable = true,
+	ShowCustomCursor = true,
+	NotifySide = "Right",
+	TabPadding = 8,
+	MenuFadeTime = 0
+})
+
+
+
+local Tabs = {
+    new = Window:AddTab('公告', 'person-standing'),
+	Main = Window:AddTab('主要','house'),
+	Esp = Window:AddTab('绘制','eye'),
+	zdg = Window:AddTab('格挡','user'),
+	Sat = Window:AddTab('体力','zap'),
+	zdx = Window:AddTab('电机','printer'),
+	Aimbot = Window:AddTab('自瞄','crosshair'),
+	tzq = Window:AddTab('通知','mails'),
+	tfz = Window:AddTab('杀戮','skull'),
+	ani = Window:AddTab('反效果','cpu'),
+	yul = Window:AddTab('娱乐功能','cpu'),
+   ["UI Settings"] = Window:AddTab('UI 调试', 'settings')
+	
+}
+
+
+local _env = getgenv and getgenv() or {}
+local _hrp = game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart")
+
+local new = Tabs.new:AddRightGroupbox('群组💬')
+
+
+new:AddButton({
+	Text = "复制Discord频道链接",
+	Func = function()
+		setclipboard("https://discord.gg/WxZkHDTNC2")
+	end,
+	DoubleClick = false,
+
+	Tooltip = "This is the main button",
+	DisabledTooltip = "I am disabled!",
+
+	Disabled = false, 
+	Visible = true, 
+	Risky = false, 
+})
+
+new:AddButton({
+	Text = "复制QQ群号[主群]",
+	Func = function()
+		setclipboard("819518685")
+	end,
+	DoubleClick = false,
+
+	Tooltip = "This is the main button",
+	DisabledTooltip = "I am disabled!",
+
+	Disabled = false, 
+	Visible = true, 
+	Risky = false, 
+})
+
+new:AddButton({
+	Text = "复制QQ群号[二群]",
+	Func = function()
+		setclipboard("912837219")
+	end,
+	DoubleClick = false,
+
+	Tooltip = "This is the main button",
+	DisabledTooltip = "I am disabled!",
+
+	Disabled = false, 
+	Visible = true, 
+	Risky = false, 
+})
+
+
+new:AddButton({
+	Text = "复制QQ群号[三群]",
+	Func = function()
+		setclipboard("311797480")
+	end,
+	DoubleClick = false,
+
+	Tooltip = "This is the main button",
+	DisabledTooltip = "I am disabled!",
+
+	Disabled = false, 
+	Visible = true, 
+	Risky = false, 
+})
+
+
+
+
+local new = Tabs.new:AddLeftGroupbox('新闻🚀')
+
+new:AddLabel("[+]Dev 阿铭 / Yuxin")
+new:AddLabel("支持是我们最大的动力😒")
+new:AddLabel("订阅我们的YOUTUBE频道")
+
+
+
+
+
+
+
+local MainTabbox = Tabs.Main:AddRightTabbox()
+local Lighting = MainTabbox:AddTab("brightness")
+
+Lighting:AddSlider("B",{
+    Text = "亮度",
+    Min = 0,
+    Default = 0,
+    Max = 3,
+    Rounding = 1,
+    Compact = true,
+    Callback = function(v)
+        _env.Brightness = v
+    end
+})
+
+Lighting:AddToggle("无阴影",{
+    Text = "无阴影",
+    Default = false,
+    Callback = function(v)
+        _env.GlobalShadows = v
+    end
+})
+
+Lighting:AddToggle("除雾",{
+    Text = "无雾",
+    Default = false,
+    Callback = function(v)
+        _env.NoFog = v
+    end
+})
+
+Lighting:AddDivider()
+
+Lighting:AddToggle("启用功能",{
+    Text = "启用",
+    Default = false,
+    Callback = function(v)
+        _env.Fullbright = v
+        game:GetService("RunService").RenderStepped:Connect(function()
+            if not game.Lighting:GetAttribute("FogStart") then 
+                game.Lighting:SetAttribute("FogStart", game.Lighting.FogStart) 
+            end
+            if not game.Lighting:GetAttribute("FogEnd") then 
+                game.Lighting:SetAttribute("FogEnd", game.Lighting.FogEnd) 
+            end
+            game.Lighting.FogStart = _env.NoFog and 0 or game.Lighting:GetAttribute("FogStart")
+            game.Lighting.FogEnd = _env.NoFog and math.huge or game.Lighting:GetAttribute("FogEnd")
+            
+            local fog = game.Lighting:FindFirstChildOfClass("Atmosphere")
+            if fog then
+                if not fog:GetAttribute("Density") then 
+                    fog:SetAttribute("Density", fog.Density) 
+                end
+                fog.Density = _env.NoFog and 0 or fog:GetAttribute("Density")
+            end
+            
+            if _env.Fullbright then
+                game.Lighting.OutdoorAmbient = Color3.new(1,1,1)
+                game.Lighting.Brightness = _env.Brightness or 0
+                game.Lighting.GlobalShadows = not _env.GlobalShadows
+            else
+                game.Lighting.OutdoorAmbient = Color3.fromRGB(55,55,55)
+                game.Lighting.Brightness = 0
+                game.Lighting.GlobalShadows = true
+            end
+        end)
+    end
+    
+})
+
+local KillerSurvival = Tabs.Main:AddLeftGroupbox("杂项")
+
+KillerSurvival:AddToggle('MyToggle', {
+    Text = '显示聊天框 | 一局一开',
+    Default = false,
+    Tooltip = 'Display chat box',
+    Callback = function(state)
+    if state then
+    game.TextChatService.ChatWindowConfiguration.Enabled = true
+    else
+    game.TextChatService.ChatWindowConfiguration.Enabled = false    
+    end
+    end
+})
+
+local AntiBanSection = Tabs.Main:AddRightGroupbox("Anti Cheat")
+
+do
+    local Players = game:GetService("Players")
+    local LocalPlayer = Players.LocalPlayer
+    local LocalizationService = game:GetService("LocalizationService")
+    local RunService = game:GetService("RunService")
+
+    shared.AntiBanSafe = shared.AntiBanSafe or {running = false, hooks = {}}
+    local data = shared.AntiBanSafe
+
+    local oldNamecall, oldIndex
+    local protectionThread
+
+    -- 初始化hooks表
+    data.hooks = data.hooks or {
+        requestHooked = false,
+        findHooked = false,
+        bypassHooked = false
+    }
+
+    local function safe(func, ...)
+        local ok, res = pcall(func, ...)
+        if ok then return res end
+        return nil
+    end
+
+    local function disableReportFlags()
+        if type(setfflag) == "function" then
+            pcall(function()
+                setfflag("AbuseReportScreenshot", "False")
+                setfflag("AbuseReportScreenshotPercentage", "0")
+                setfflag("AbuseReportEnabled", "False")
+                setfflag("ReportAbuseMenu", "False")
+                setfflag("EnableAbuseReportScreenshot", "False")
+                setfflag("AbuseReportVideo", "False")
+                setfflag("AbuseReportVideoPercentage", "0")
+                setfflag("VideoCaptureEnabled", "False")
+                setfflag("RecordVideo", "False")
+            end)
+        end
+    end
+
+    local function hookRequests()
+        if data.hooks.requestHooked then return true end
+        
+        local oldRequest = (syn and syn.request) or (request and request) or (http_request and http_request)
+        if type(oldRequest) == "function" and type(hookfunction) == "function" then
+            local success = pcall(function()
+                hookfunction(oldRequest, function(req)
+                    if req and req.Url and tostring(req.Url):lower():find("abuse") then
+                        return {StatusCode = 200, Body = "Blocked"}
+                    end
+                    return oldRequest(req)
+                end)
+            end)
+            
+            if success then
+                data.hooks.requestHooked = true
+                return true
+            end
+        end
+        return false
+    end
+
+    local function hookFindFirstChild()
+        if data.hooks.findHooked then return true end
+        
+        local oldFind = workspace.FindFirstChild
+        if type(oldFind) == "function" and type(hookfunction) == "function" then
+            local success = pcall(function()
+                hookfunction(oldFind, function(self, name, ...)
+                    if checkcaller and checkcaller() then 
+                        return oldFind(self, name, ...) 
+                    end
+                    if name and tostring(name):lower():find("screenshot") then 
+                        return nil 
+                    end
+                    if name and tostring(name):lower():find("video") then 
+                        return nil 
+                    end
+local repo = 'https://raw.githubusercontent.com/deividcomsono/Obsidian/main/'
+                end)
+            end)
+            
+            if success then
+                data.hooks.findHooked = true
+                return true
+            end
+        end
+        return false
+    end
+
+    local function setupMetatableHooks()
+        if data.hooks.bypassHooked then return true end
+        
+        if getrawmetatable and hookmetamethod and newcclosure then
+            local success = pcall(function()
+                local mt = getrawmetatable(game)
+                if not mt then return false end
+                
+                setreadonly(mt, false)
+                
+                -- 保存原始方法
+                oldNamecall = oldNamecall or mt.__namecall
+                oldIndex = oldIndex or mt.__index
+
+                -- 设置namecall hook
+                mt.__namecall = newcclosure(function(self, ...)
+                    if checkcaller and checkcaller() then
+                        return oldNamecall(self, ...)
+                    end
+                    
+                    local method = getnamecallmethod()
+                    local args = {...}
+
+                    if (method == "Kick" or method == "Ban") and self == LocalPlayer then 
+                        return nil 
+                    end
+
+                    if (method == "FireServer" or method == "InvokeServer") and args[1] then
+                        local msg = tostring(args[1]):lower()
+                        if msg:find("kick") or msg:find("ban") or msg:find("report") then 
+                            return nil 
+                        end
+                    end
+
+                    if self == LocalizationService and method == "GetCountryRegionForPlayerAsync" then
+                        local success, result = pcall(function()
+                            return LocalizationService:GetCountryRegionForPlayerAsync(LocalPlayer)
+                        end)
